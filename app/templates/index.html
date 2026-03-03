@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>House Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+            width: 420px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2d89ef;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1b5fbd;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #2d89ef;
+            font-weight: bold;
+        }
+
+        .model-info {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f9fafc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .model-info h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* 🔥 Full Screen Loading Overlay */
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #2d89ef;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🏠 House Price Prediction</h2>
+
+    <form action="/predict" method="post" onsubmit="showSpinner()">
+
+        <label>Location:</label>
+        <select name="location" required>
+            {% for loc in locations %}
+                <option value="{{ loc }}">{{ loc }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Area Type:</label>
+        <select name="area_type" required>
+            {% for area in area_types %}
+                <option value="{{ area }}">{{ area }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Total Sqft:</label>
+        <input type="number" step="any" name="total_sqft" min="300" max="20000" required>
+
+        <label>Bathrooms:</label>
+        <input type="number" name="bath" min="1" max="10" required>
+
+        <label>Balconies:</label>
+        <input type="number" name="balcony" min="0" max="5" required>
+
+        <label>BHK:</label>
+        <input type="number" name="bhk" min="1" max="10" required>
+
+        <button type="submit">Predict Price</button>
+
+    </form>
+
+    {% if prediction_text %}
+        <div class="result">
+            {{ prediction_text }}
+        </div>
+    {% endif %}
+
+    <!-- 🔥 Model Information Section -->
+    <div class="model-info">
+        <h3>📊 Model Information</h3>
+        <p><strong>Model:</strong> {{ model_type }}</p>
+        <p><strong>Target Transformation:</strong> {{ target_transformation }}</p>
+        <p><strong>Test R² Score:</strong> {{ r2_score }}</p>
+        <p><strong>Dataset Size:</strong> {{ dataset_size }}</p>
+    </div>
+
+</div>
+
+<!-- 🔥 Full Screen Loading Overlay -->
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+
+<script>
+function showSpinner() {
+    document.getElementById("loadingOverlay").style.display = "flex";
+}
+</script>
+
+</body>
+</html>
